@@ -23,6 +23,7 @@ ext {
     supportVersion = '25.4.0'
     retrofitVersion = '2.3.0'
     gsonVersion = '2.8.1'
+    daggerVersion = '2.11'
 }
 
 dependencies {
@@ -34,5 +35,8 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "com.google.code.gson:gson:$gsonVersion"
+    implementation "com.google.dagger:dagger:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
+    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
     testImplementation 'junit:junit:4.12'
 }
