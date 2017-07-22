@@ -43,4 +43,6 @@ dependencies {
     annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
     implementation "com.google.dagger:dagger-android-support:$daggerVersion"
     testImplementation 'junit:junit:4.12'
+    testImplementation 'com.squareup.okhttp:mockwebserver:2.7.5'
+    testImplementation 'org.mockito:mockito-all:1.10.19'
 }

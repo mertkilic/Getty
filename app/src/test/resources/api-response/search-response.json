@@ -1,0 +1,26 @@
+{
+  "result_count": 1,
+  "images": [
+    {
+      "id": "sb10069853n-001",
+      "asset_family": "creative",
+      "caption": null,
+      "collection_code": "TSIR",
+      "collection_id": 41,
+      "collection_name": "Stone",
+      "display_sizes": [
+        {
+          "is_watermarked": false,
+          "name": "thumb",
+          "uri": "https://media.gettyimages.com/photos/afgan-hound-with-hair-blowing-studio-shot-picture-idsb10069853n-001?b=1&k=6&m=sb10069853n-001&s=170x170&h=FpW3R52LBELROoHmBQAROq6c0XUbJLQc6qTESAfWtt0="
+        }
+      ],
+      "license_model": "rightsmanaged",
+      "max_dimensions": {
+        "height": 4760,
+        "width": 3486
+      },
+      "title": "Afgan Hound with hair blowing, studio shot"
+    }
+  ]
+}
