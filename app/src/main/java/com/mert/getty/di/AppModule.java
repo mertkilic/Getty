@@ -3,7 +3,7 @@ package com.mert.getty.di;
 import android.app.Application;
 import android.content.Context;
 
-import com.mert.getty.MainActivityComponent;
+import com.mert.getty.ui.MainActivityComponent;
 import com.mert.getty.data.GettyService;
 import com.mert.getty.data.api.GettyApiClient;
 import com.mert.getty.data.api.GettyApiInterceptor;
@@ -47,12 +47,6 @@ public class AppModule {
     @Singleton
     Interceptor provideInterceptor() {
         return new GettyApiInterceptor();
-    }
-
-    @Provides
-    @Singleton
-    GettyApiClient provideApiClient(GettyService service) {
-        return new GettyApiClient(service);
     }
 
     @Provides

@@ -1,4 +1,4 @@
-package com.mert.getty;
+package com.mert.getty.ui;
 
 import dagger.Subcomponent;
 import dagger.android.AndroidInjector;

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Getty</string>
+    <string name="getty_hint">Search getty images !</string>
 </resources>

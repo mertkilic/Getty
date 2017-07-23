@@ -2,8 +2,8 @@ package com.mert.getty.di;
 
 import android.app.Activity;
 
-import com.mert.getty.MainActivity;
-import com.mert.getty.MainActivityComponent;
+import com.mert.getty.ui.MainActivity;
+import com.mert.getty.ui.MainActivityComponent;
 
 import dagger.Binds;
 import dagger.Module;

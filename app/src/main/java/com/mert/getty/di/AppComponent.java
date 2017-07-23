@@ -3,7 +3,6 @@ package com.mert.getty.di;
 import android.app.Application;
 
 import com.mert.getty.GettyApp;
-import com.mert.getty.MainActivityModule;
 
 import javax.inject.Singleton;
 

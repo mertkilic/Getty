@@ -1,4 +1,6 @@
-package com.mert.getty;
+package com.mert.getty.ui;
+
+import com.mert.getty.data.GettyService;
 
 import dagger.Module;
 import dagger.Provides;
@@ -10,13 +12,13 @@ import dagger.Provides;
 @Module
 public class MainActivityModule {
 
-    /*@Provides
+    @Provides
     MainView provideMainView(MainActivity mainActivity){
         return mainActivity;
     }
 
     @Provides
-    MainPresenter provideMainPresenter(MainView mainView, ApiService apiService){
-        return new MainPresenterImpl(mainView, apiService);
-    }*/
+    MainPresenter provideMainPresenter(MainView mainView, GettyService service){
+        return new MainPresenterImpl(mainView, service);
+    }
 }

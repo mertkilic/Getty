@@ -21,6 +21,10 @@ android {
     buildTypes.each {
         it.buildConfigField 'String', 'GETTY_API_KEY', GettyImagesApiKey
     }
+
+    dataBinding {
+        enabled = true
+    }
 }
 
 ext {
