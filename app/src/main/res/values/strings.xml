@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Getty</string>
     <string name="getty_hint">Search getty images !</string>
+    <string name="no_internet">Please check your internet connection</string>
 </resources>

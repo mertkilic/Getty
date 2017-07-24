@@ -3,10 +3,10 @@ package com.mert.getty.ui;
 import android.databinding.DataBindingComponent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
@@ -17,6 +17,7 @@ import com.mert.getty.databinding.ToastCaptionBinding;
 import com.mert.getty.ui.list.SearchResultAdapter;
 import com.mert.getty.ui.list.SpaceItemDecorator;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,12 +62,20 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     @Override
-    public void onError() {
-        Log.d(TAG, "onError: ");
+    public void onError(Throwable t) {
+        String errorMessage;
+        if (t instanceof UnknownHostException) {
+            errorMessage = getString(R.string.no_internet);
+        } else errorMessage = t.getMessage();
+
+        new AlertDialog.Builder(this)
+                .setMessage(errorMessage)
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .show();
     }
 
     private void showCaption(String description) {
-        if(TextUtils.isEmpty(description))
+        if (TextUtils.isEmpty(description))
             return;
 
         if (toastBinding == null) {

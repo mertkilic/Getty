@@ -54,7 +54,7 @@ public class MainPresenterImpl extends BaseObservable implements MainPresenter {
 
             @Override
             public void onFailure(Call<GettyResponse> call, Throwable t) {
-                mainView.onError();
+                mainView.onError(t);
                 loading.set(false);
             }
         });

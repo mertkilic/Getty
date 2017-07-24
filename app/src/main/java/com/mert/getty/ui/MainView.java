@@ -14,7 +14,7 @@ public interface MainView {
 
     void onImagesLoaded(List<Image> images);
 
-    void onError();
+    void onError(Throwable t);
 
     RecyclerView.LayoutManager getLayoutManager();
 }
