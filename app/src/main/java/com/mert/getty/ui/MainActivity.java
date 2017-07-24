@@ -47,12 +47,16 @@ public class MainActivity extends AppCompatActivity implements MainView {
         mainBinding.gettyList.addItemDecoration(new SpaceItemDecorator(getResources().getDimensionPixelSize(R.dimen.space_grid_item)));
 
         mainBinding.gettyList.setAdapter(adapter);
-        adapter.add(new ArrayList<>());
     }
 
     @Override
     public RecyclerView.LayoutManager getLayoutManager() {
         return mainBinding.gettyList.getLayoutManager();
+    }
+
+    @Override
+    public void clear() {
+        adapter.clear();
     }
 
     @Override

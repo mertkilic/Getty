@@ -21,6 +21,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,6 +44,13 @@ public abstract class DataBoundListAdapter<T, V extends ViewDataBinding>
         if (!items.isEmpty()) {
             notifyItemRangeInserted(this.items.size() - 1, items.size());
         } else {
+            notifyDataSetChanged();
+        }
+    }
+
+    public void clear() {
+        if (items != null) {
+            items.clear();
             notifyDataSetChanged();
         }
     }

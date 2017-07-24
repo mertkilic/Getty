@@ -1,15 +1,11 @@
 package com.mert.getty.ui;
 
 import android.databinding.BaseObservable;
-import android.databinding.Bindable;
 import android.databinding.ObservableBoolean;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.widget.TextView;
 
-import com.mert.getty.BR;
 import com.mert.getty.data.GettyService;
 import com.mert.getty.data.api.GettyClientConfig;
 import com.mert.getty.data.model.GettyResponse;
@@ -34,7 +30,7 @@ public class MainPresenterImpl extends BaseObservable implements MainPresenter {
     private GettyService service;
     private ObservableBoolean loading = new ObservableBoolean(false);
     private LoadMoreScrollListener scrollListener;
-    private String query;
+    private String query="";
 
     @Inject
     MainPresenterImpl(MainView mainView, GettyService service) {
@@ -44,6 +40,9 @@ public class MainPresenterImpl extends BaseObservable implements MainPresenter {
 
     @Override
     public void search(String keyword, int page) {
+        if(!query.equals(keyword))
+            mainView.clear();
+
         loading.set(true);
         service.search(keyword, GettyClientConfig.PAGE_SIZE, page).enqueue(new Callback<GettyResponse>() {
             @Override

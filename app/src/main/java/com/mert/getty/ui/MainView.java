@@ -17,4 +17,6 @@ public interface MainView {
     void onError(Throwable t);
 
     RecyclerView.LayoutManager getLayoutManager();
+
+    void clear();
 }
