@@ -2,6 +2,7 @@ package com.mert.getty.ui.list;
 
 import android.databinding.DataBindingComponent;
 import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -17,19 +18,27 @@ import com.mert.getty.databinding.SearchItemBinding;
 public class SearchResultAdapter extends DataBoundListAdapter<Image, SearchItemBinding> {
 
     private final android.databinding.DataBindingComponent dataBindingComponent;
+    private final SearchItemCallback callback;
 
-    public SearchResultAdapter(DataBindingComponent dataBindingComponent) {
+    public SearchResultAdapter(DataBindingComponent dataBindingComponent, SearchItemCallback callback) {
         this.dataBindingComponent = dataBindingComponent;
+        this.callback = callback;
     }
 
     @Override
     protected SearchItemBinding createBinding(ViewGroup parent) {
-        return DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
-                R.layout.search_item, parent, false,dataBindingComponent);
+        SearchItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
+                R.layout.search_item, parent, false, dataBindingComponent);
+        binding.setCallback(callback);
+        return binding;
     }
 
     @Override
     protected void bind(SearchItemBinding binding, Image item) {
         binding.setImage(item);
+    }
+
+    public interface SearchItemCallback {
+        void onClick(Image image);
     }
 }

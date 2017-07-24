@@ -6,12 +6,16 @@
         <variable
             name="image"
             type="com.mert.getty.data.model.Image"/>
+        <variable
+            name="callback"
+            type="com.mert.getty.ui.list.SearchResultAdapter.SearchItemCallback"/>
     </data>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:onClick="@{()->callback.onClick(image)}">
 
         <ImageView
             android:layout_width="match_parent"

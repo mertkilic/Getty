@@ -4,19 +4,20 @@ import android.databinding.DataBindingComponent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
+import android.widget.Toast;
 
 import com.mert.getty.R;
 import com.mert.getty.data.model.Image;
 import com.mert.getty.databinding.ActivityMainBinding;
-import com.mert.getty.ui.list.LoadMoreScrollListener;
+import com.mert.getty.databinding.ToastCaptionBinding;
 import com.mert.getty.ui.list.SearchResultAdapter;
 import com.mert.getty.ui.list.SpaceItemDecorator;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -30,7 +31,8 @@ public class MainActivity extends AppCompatActivity implements MainView {
     @Inject
     MainPresenter presenter;
 
-    private ActivityMainBinding binding;
+    private ActivityMainBinding mainBinding;
+    private ToastCaptionBinding toastBinding;
     private DataBindingComponent dataBindingComponent = new SearchDataBindingComponent(this);
     private SearchResultAdapter adapter;
 
@@ -38,33 +40,46 @@ public class MainActivity extends AppCompatActivity implements MainView {
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main, dataBindingComponent);
-        binding.setPresenter(((MainPresenterImpl) presenter));
-        adapter = new SearchResultAdapter(dataBindingComponent);
-        binding.gettyList.addItemDecoration(new SpaceItemDecorator(getResources().getDimensionPixelSize(R.dimen.space_grid_item)));
+        mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main, dataBindingComponent);
+        mainBinding.setPresenter(((MainPresenterImpl) presenter));
+        adapter = new SearchResultAdapter(dataBindingComponent, image -> showCaption(image.getCaption()));
+        mainBinding.gettyList.addItemDecoration(new SpaceItemDecorator(getResources().getDimensionPixelSize(R.dimen.space_grid_item)));
 
-        binding.gettyList.setAdapter(adapter);
-        adapter.add(new ArrayList<Image>());
+        mainBinding.gettyList.setAdapter(adapter);
+        adapter.add(new ArrayList<>());
     }
 
     @Override
     public RecyclerView.LayoutManager getLayoutManager() {
-        return binding.gettyList.getLayoutManager();
-    }
-
-    @Override
-    public boolean isListEmpty() {
-        return adapter.getItemCount() == 0;
+        return mainBinding.gettyList.getLayoutManager();
     }
 
     @Override
     public void onImagesLoaded(final List<Image> images) {
         adapter.add(images);
-        binding.executePendingBindings();
+        mainBinding.executePendingBindings();
     }
 
     @Override
     public void onError() {
         Log.d(TAG, "onError: ");
+    }
+
+    private void showCaption(String description) {
+        if(TextUtils.isEmpty(description))
+            return;
+
+        if (toastBinding == null) {
+            toastBinding = DataBindingUtil.inflate(getLayoutInflater(), R.layout.toast_caption, mainBinding.root, false);
+        }
+
+        toastBinding.toastText.setText(description);
+
+        Toast toast = new Toast(this);
+        toast.setView(toastBinding.getRoot());
+        toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 0,
+                getResources().getDimensionPixelSize(R.dimen.space_grid_item));
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.show();
     }
 }

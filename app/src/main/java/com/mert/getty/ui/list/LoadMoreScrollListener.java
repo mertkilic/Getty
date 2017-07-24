@@ -15,7 +15,7 @@ public abstract class LoadMoreScrollListener extends RecyclerView.OnScrollListen
     private ObservableBoolean loading = new ObservableBoolean(false);
     private int currentPage = 1;
 
-    LoadMoreScrollListener(RecyclerView.LayoutManager layoutManager) {
+    public LoadMoreScrollListener(RecyclerView.LayoutManager layoutManager) {
         this.mLayoutManager = layoutManager;
     }
 

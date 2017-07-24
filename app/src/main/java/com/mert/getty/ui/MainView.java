@@ -12,8 +12,6 @@ import java.util.List;
 
 public interface MainView {
 
-    boolean isListEmpty();
-
     void onImagesLoaded(List<Image> images);
 
     void onError();
