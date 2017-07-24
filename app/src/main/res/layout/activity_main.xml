@@ -2,6 +2,7 @@
 
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.mert.getty.ui.MainActivity">
 
@@ -16,21 +17,36 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:hint="@string/getty_hint"
-            android:imeOptions="actionSearch"
-            android:inputType="text"
-            android:onEditorAction="@{presenter::onEditorAction}"
-            android:visibility="@{!presenter.loading}"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:hint="@string/getty_hint"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:onEditorAction="@{presenter::onEditorAction}"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/getty_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="android.support.v7.widget.GridLayoutManager"
+                app:scrollListener="@{presenter.onScrollListener}"
+                app:spanCount="2"/>
+        </LinearLayout>
 
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="@{presenter.loading}"/>
+
+
     </FrameLayout>
 </layout>
 
