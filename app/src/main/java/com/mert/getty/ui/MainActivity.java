@@ -1,5 +1,6 @@
 package com.mert.getty.ui;
 
+import android.content.DialogInterface;
 import android.databinding.DataBindingComponent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -18,7 +19,6 @@ import com.mert.getty.ui.list.SearchResultAdapter;
 import com.mert.getty.ui.list.SpaceItemDecorator;
 
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -43,7 +43,12 @@ public class MainActivity extends AppCompatActivity implements MainView {
         super.onCreate(savedInstanceState);
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main, dataBindingComponent);
         mainBinding.setPresenter(((MainPresenterImpl) presenter));
-        adapter = new SearchResultAdapter(dataBindingComponent, image -> showCaption(image.getCaption()));
+        adapter = new SearchResultAdapter(dataBindingComponent, new SearchResultAdapter.SearchItemCallback() {
+            @Override
+            public void onClick(Image image) {
+                showCaption(image.getCaption());
+            }
+        });
         mainBinding.gettyList.addItemDecoration(new SpaceItemDecorator(getResources().getDimensionPixelSize(R.dimen.space_grid_item)));
 
         mainBinding.gettyList.setAdapter(adapter);
@@ -74,7 +79,12 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
         new AlertDialog.Builder(this)
                 .setMessage(errorMessage)
-                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
                 .show();
     }
 
