@@ -47,8 +47,13 @@ public class MainPresenterImpl extends BaseObservable implements MainPresenter {
         service.search(keyword, GettyClientConfig.PAGE_SIZE, page).enqueue(new Callback<GettyResponse>() {
             @Override
             public void onResponse(Call<GettyResponse> call, Response<GettyResponse> response) {
-                mainView.onImagesLoaded(response.body().getImages());
-                loading.set(false);
+                if (response.isSuccessful()) {
+                    mainView.onImagesLoaded(response.body().getImages());
+                    loading.set(false);
+                } else{
+                    mainView.onError(new Throwable("Server error has occured"));
+                    loading.set(false);
+                }
             }
 
             @Override
