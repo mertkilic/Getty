@@ -3,9 +3,7 @@ package com.mert.getty.di;
 import android.app.Application;
 import android.content.Context;
 
-import com.mert.getty.ui.MainActivityComponent;
 import com.mert.getty.data.GettyService;
-import com.mert.getty.data.api.GettyApiClient;
 import com.mert.getty.data.api.GettyApiInterceptor;
 
 import javax.inject.Singleton;
@@ -22,8 +20,7 @@ import static com.mert.getty.data.api.GettyClientConfig.BASE_ENDPOINT;
 /**
  * Created by Mert Kilic on 18.7.2017.
  */
-@Module(subcomponents = {
-        MainActivityComponent.class})
+@Module
 public class AppModule {
 
     @Provides

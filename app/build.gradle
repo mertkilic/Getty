@@ -56,8 +56,10 @@ dependencies {
     compile "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     compile "com.google.code.gson:gson:$gsonVersion"
     compile "com.google.dagger:dagger:$daggerVersion"
-    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
+    compile "com.google.dagger:dagger-android:$daggerVersion"
     compile "com.google.dagger:dagger-android-support:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-android-processor:$daggerVersion"
     testCompile 'junit:junit:4.12'
     testCompile 'com.squareup.okhttp:mockwebserver:2.7.5'
     testCompile 'org.mockito:mockito-all:1.10.19'
