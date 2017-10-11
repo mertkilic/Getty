@@ -18,8 +18,11 @@ package com.mert.getty.ui.list;
 
 import android.databinding.ViewDataBinding;
 import android.support.annotation.Nullable;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
+
+import com.mert.getty.data.model.Image;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,26 +36,20 @@ import java.util.List;
 public abstract class DataBoundListAdapter<T, V extends ViewDataBinding>
         extends RecyclerView.Adapter<DataBoundViewHolder<V>> {
 
-    @Nullable
-    private List<T> items;
+    private List<T> items = new ArrayList<>();
 
-    public void add(List<T> items) {
-        if (this.items != null)
-            this.items.addAll(items);
-        else this.items = items;
-
-        if (!items.isEmpty()) {
-            notifyItemRangeInserted(this.items.size() - 1, items.size());
-        } else {
-            notifyDataSetChanged();
-        }
+    public void updateItems(List<T> items){
+        List<T> oldItems = new ArrayList<>(this.items);
+        this.items.addAll(items);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new GettyDiffUtil(oldItems, this.items));
+        diffResult.dispatchUpdatesTo(this);
     }
 
-    public void clear() {
-        if (items != null) {
-            items.clear();
-            notifyDataSetChanged();
-        }
+    public void clear(){
+        List<T> oldItems = new ArrayList<>(this.items);
+        this.items.clear();
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new GettyDiffUtil(oldItems, this.items));
+        diffResult.dispatchUpdatesTo(this);
     }
 
     @Override
@@ -67,7 +64,6 @@ public abstract class DataBoundListAdapter<T, V extends ViewDataBinding>
     public final void onBindViewHolder(DataBoundViewHolder<V> holder, int position) {
         //noinspection ConstantConditions
         bind(holder.binding, items.get(position));
-        holder.binding.executePendingBindings();
     }
 
     protected abstract void bind(V binding, T item);
@@ -75,5 +71,38 @@ public abstract class DataBoundListAdapter<T, V extends ViewDataBinding>
     @Override
     public int getItemCount() {
         return items == null ? 0 : items.size();
+    }
+
+    private class GettyDiffUtil extends DiffUtil.Callback{
+
+        List<T> oldItems;
+        List<T> newItems;
+
+        public GettyDiffUtil(List<T> oldItems, List<T> newItems) {
+            this.oldItems = oldItems;
+            this.newItems = newItems;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldItems.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newItems.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            T oldItem = oldItems.get(oldItemPosition);
+            T newItem = newItems.get(newItemPosition);
+            return (oldItem.equals(newItem));
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            return ((Image) oldItems.get(oldItemPosition)).getTitle().equals(((Image) newItems.get(newItemPosition)).getTitle());
+        }
     }
 }

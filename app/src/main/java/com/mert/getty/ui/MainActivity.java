@@ -22,7 +22,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import dagger.android.AndroidInjection;
 import dagger.android.support.DaggerAppCompatActivity;
 
 public class MainActivity extends DaggerAppCompatActivity implements MainView {
@@ -65,8 +64,7 @@ public class MainActivity extends DaggerAppCompatActivity implements MainView {
 
     @Override
     public void onImagesLoaded(final List<Image> images) {
-        adapter.add(images);
-        mainBinding.executePendingBindings();
+        adapter.updateItems(images);
     }
 
     @Override

@@ -54,4 +54,9 @@ public class Image {
     public void setUrl(String url) {
         this.url = url;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this.id.equals(((Image) obj).getId());
+    }
 }

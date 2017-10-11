@@ -1,8 +1,6 @@
 package com.mert.getty.data.model;
 
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.mert.getty.data.parser.ImageSkippingJsonDeserializer;
 
 import java.util.List;
 
