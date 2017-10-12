@@ -8,14 +8,8 @@ import com.mert.getty.util.GettyBindingAdapter;
 
 public class SearchDataBindingComponent implements android.databinding.DataBindingComponent {
 
-    private final GettyBindingAdapter adapter;
-
-    public SearchDataBindingComponent(MainActivity activity) {
-        this.adapter = new GettyBindingAdapter(activity);
-    }
-
     @Override
     public GettyBindingAdapter getGettyBindingAdapter() {
-        return adapter;
+        return new GettyBindingAdapter();
     }
 }

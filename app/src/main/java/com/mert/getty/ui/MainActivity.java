@@ -36,7 +36,7 @@ public class MainActivity extends DaggerAppCompatActivity implements MainView, T
 
     private ActivityMainBinding mainBinding;
     private ToastCaptionBinding toastBinding;
-    private DataBindingComponent dataBindingComponent = new SearchDataBindingComponent(this);
+    private DataBindingComponent dataBindingComponent = new SearchDataBindingComponent();
     private SearchResultAdapter adapter;
 
     @Override
