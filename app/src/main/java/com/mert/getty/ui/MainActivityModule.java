@@ -13,12 +13,7 @@ import dagger.Provides;
 public class MainActivityModule {
 
     @Provides
-    MainView provideMainView(MainActivity mainActivity){
-        return mainActivity;
-    }
-
-    @Provides
-    MainPresenter provideMainPresenter(MainView mainView, GettyService service){
-        return new MainPresenterImpl(mainView, service);
+    MainPresenter provideMainPresenter(GettyService service){
+        return new MainPresenterImpl(service);
     }
 }

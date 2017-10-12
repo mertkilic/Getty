@@ -24,13 +24,13 @@
             android:orientation="vertical">
 
             <EditText
+                android:id="@+id/search_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:hint="@string/getty_hint"
                 android:imeOptions="actionSearch"
-                android:inputType="text"
-                android:onEditorAction="@{presenter::onEditorAction}"/>
+                android:inputType="text"/>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/getty_list"

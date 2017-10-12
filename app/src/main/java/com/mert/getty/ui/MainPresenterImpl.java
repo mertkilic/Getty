@@ -1,16 +1,12 @@
 package com.mert.getty.ui;
 
-import android.databinding.BaseObservable;
 import android.databinding.ObservableBoolean;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
-import android.widget.TextView;
 
 import com.mert.getty.data.GettyService;
 import com.mert.getty.data.api.GettyClientConfig;
 import com.mert.getty.data.model.GettyResponse;
 import com.mert.getty.ui.list.LoadMoreScrollListener;
-import com.mert.getty.util.AndroidUtils;
 
 import javax.inject.Inject;
 
@@ -22,7 +18,7 @@ import retrofit2.Response;
  * Created by Mert Kilic on 22.7.2017.
  */
 
-public class MainPresenterImpl extends BaseObservable implements MainPresenter {
+public class MainPresenterImpl implements MainPresenter {
 
     private String TAG = MainPresenterImpl.class.getSimpleName();
 
@@ -30,27 +26,26 @@ public class MainPresenterImpl extends BaseObservable implements MainPresenter {
     private GettyService service;
     private ObservableBoolean loading = new ObservableBoolean(false);
     private LoadMoreScrollListener scrollListener;
-    private String query="";
+    private String query = "";
 
     @Inject
-    MainPresenterImpl(MainView mainView, GettyService service) {
-        this.mainView = mainView;
+    MainPresenterImpl(GettyService service) {
         this.service = service;
     }
 
     @Override
-    public void search(String keyword, int page) {
-        if(!query.equals(keyword))
+    public void search(String query, int page) {
+        if (!this.query.equals(query))
             mainView.clear();
 
         loading.set(true);
-        service.search(keyword, GettyClientConfig.PAGE_SIZE, page).enqueue(new Callback<GettyResponse>() {
+        service.search(query, GettyClientConfig.PAGE_SIZE, page).enqueue(new Callback<GettyResponse>() {
             @Override
             public void onResponse(Call<GettyResponse> call, Response<GettyResponse> response) {
                 if (response.isSuccessful()) {
                     mainView.onImagesLoaded(response.body().getImages());
                     loading.set(false);
-                } else{
+                } else {
                     mainView.onError(new Throwable("Server error has occured"));
                     loading.set(false);
                 }
@@ -62,6 +57,12 @@ public class MainPresenterImpl extends BaseObservable implements MainPresenter {
                 loading.set(false);
             }
         });
+        this.query = query;
+    }
+
+    @Override
+    public void resetQuery() {
+        this.query = "";
     }
 
     public ObservableBoolean getLoading() {
@@ -69,11 +70,11 @@ public class MainPresenterImpl extends BaseObservable implements MainPresenter {
     }
 
     public RecyclerView.OnScrollListener getOnScrollListener() {
-        if(scrollListener == null){
+        if (scrollListener == null) {
             scrollListener = new LoadMoreScrollListener(mainView.getLayoutManager()) {
                 @Override
                 public void onLoadMore(int page) {
-                    search(query,page);
+                    search(query, page);
                 }
             };
             scrollListener.setLoading(loading);
@@ -82,15 +83,12 @@ public class MainPresenterImpl extends BaseObservable implements MainPresenter {
     }
 
     @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        CharSequence query = v.getText();
-        if (query.length() >= 3) {
-            search(query.toString(), 1);
-            this.query = query.toString();
-            AndroidUtils.hideKeyboard(v);
-            return true;
-        }
-        this.query = "";
-        return false;
+    public void attachView(MainView view) {
+        mainView = view;
+    }
+
+    @Override
+    public void detachView() {
+        mainView = null;
     }
 }

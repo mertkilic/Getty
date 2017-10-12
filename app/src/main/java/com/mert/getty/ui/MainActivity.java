@@ -8,6 +8,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.KeyEvent;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mert.getty.R;
@@ -16,6 +18,7 @@ import com.mert.getty.databinding.ActivityMainBinding;
 import com.mert.getty.databinding.ToastCaptionBinding;
 import com.mert.getty.ui.list.SearchResultAdapter;
 import com.mert.getty.ui.list.SpaceItemDecorator;
+import com.mert.getty.util.AndroidUtils;
 
 import java.net.UnknownHostException;
 import java.util.List;
@@ -24,7 +27,7 @@ import javax.inject.Inject;
 
 import dagger.android.support.DaggerAppCompatActivity;
 
-public class MainActivity extends DaggerAppCompatActivity implements MainView {
+public class MainActivity extends DaggerAppCompatActivity implements MainView, TextView.OnEditorActionListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -48,8 +51,32 @@ public class MainActivity extends DaggerAppCompatActivity implements MainView {
             }
         });
         mainBinding.gettyList.addItemDecoration(new SpaceItemDecorator(getResources().getDimensionPixelSize(R.dimen.space_grid_item)));
-
         mainBinding.gettyList.setAdapter(adapter);
+        mainBinding.searchView.setOnEditorActionListener(this);
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        CharSequence query = v.getText();
+        if (query.length() >= 3) {
+            presenter.search(query.toString(), 1);
+            AndroidUtils.hideKeyboard(v);
+            return true;
+        }
+        presenter.resetQuery();
+        return false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.attachView(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 
     @Override
