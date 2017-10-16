@@ -5,12 +5,15 @@ import android.content.Context;
 
 import com.mert.getty.data.GettyService;
 import com.mert.getty.data.api.GettyApiInterceptor;
+import com.mert.getty.data.api.GettyClientConfig;
+
+import java.io.File;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import okhttp3.Interceptor;
+import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -26,6 +29,12 @@ public class AppModule {
 
     @Provides
     @Singleton
+    Context provideContext(Application application) {
+        return application.getApplicationContext();
+    }
+
+    @Provides
+    @Singleton
     GettyService provideGettyService(OkHttpClient client) {
         return new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
@@ -37,20 +46,26 @@ public class AppModule {
 
     @Provides
     @Singleton
-    OkHttpClient provideOkHttpClient(Interceptor interceptor) {
-        return new OkHttpClient.Builder()
-                .addInterceptor(interceptor).build();
+    Cache provideCache(Context context) {
+        File cacheFile = new File(context.getFilesDir(), GettyClientConfig.CACHE_NAME);
+        if (!cacheFile.exists()) {
+            cacheFile.mkdir();
+        }
+        return new Cache(cacheFile, GettyClientConfig.CACHE_SIZE);
     }
 
     @Provides
     @Singleton
-    Interceptor provideInterceptor() {
+    GettyApiInterceptor provideCacheInterceptor() {
         return new GettyApiInterceptor();
     }
 
     @Provides
     @Singleton
-    Context provideContext(Application application) {
-        return application;
+    OkHttpClient provideOkHttpClient(GettyApiInterceptor interceptor, Cache cache) {
+        return new OkHttpClient.Builder()
+                .cache(cache)
+                .addInterceptor(interceptor)
+                .build();
     }
 }
