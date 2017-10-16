@@ -44,6 +44,8 @@ ext {
     gsonVersion = '2.8.1'
     daggerVersion = '2.11'
     picassoVersion = "2.5.2"
+    rxAndroidVersion = "2.0.1"
+    rxJavaVersion = "2.1.0"
 }
 
 dependencies {
@@ -56,6 +58,9 @@ dependencies {
     compile "com.squareup.picasso:picasso:$picassoVersion"
     compile "com.squareup.retrofit2:retrofit:$retrofitVersion"
     compile "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    compile "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
+    compile "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
+    compile "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
     compile "com.google.code.gson:gson:$gsonVersion"
     compile "com.google.dagger:dagger:$daggerVersion"
     compile "com.google.dagger:dagger-android:$daggerVersion"
