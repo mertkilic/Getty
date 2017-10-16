@@ -13,6 +13,7 @@ import dagger.Provides;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.mert.getty.data.api.GettyClientConfig.BASE_ENDPOINT;
@@ -30,6 +31,7 @@ public class AppModule {
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(BASE_ENDPOINT)
                 .client(client)
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build().create(GettyService.class);
     }
 

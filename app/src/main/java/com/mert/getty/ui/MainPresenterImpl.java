@@ -10,8 +10,11 @@ import com.mert.getty.ui.list.LoadMoreScrollListener;
 
 import javax.inject.Inject;
 
-import retrofit2.Call;
-import retrofit2.Callback;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
 /**
@@ -25,6 +28,7 @@ public class MainPresenterImpl implements MainPresenter {
     private MainView mainView;
     private GettyService service;
     private ObservableBoolean loading = new ObservableBoolean(false);
+    private CompositeDisposable disposables = new CompositeDisposable();
     private LoadMoreScrollListener scrollListener;
     private String query = "";
 
@@ -37,27 +41,43 @@ public class MainPresenterImpl implements MainPresenter {
     public void search(String query, int page) {
         if (!this.query.equals(query))
             mainView.clear();
-
         loading.set(true);
-        service.search(query, GettyClientConfig.PAGE_SIZE, page).enqueue(new Callback<GettyResponse>() {
+
+        DisposableObserver<Response<GettyResponse>> searchDisposableObserver = getSearchDisposableObserver();
+
+        service.search(query, GettyClientConfig.PAGE_SIZE, page)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(searchDisposableObserver);
+
+        disposables.add(searchDisposableObserver);
+
+        this.query = query;
+    }
+
+    private DisposableObserver<Response<GettyResponse>> getSearchDisposableObserver() {
+        return new DisposableObserver<Response<GettyResponse>>() {
             @Override
-            public void onResponse(Call<GettyResponse> call, Response<GettyResponse> response) {
+            public void onNext(@NonNull Response<GettyResponse> response) {
                 if (response.isSuccessful()) {
                     mainView.onImagesLoaded(response.body().getImages());
-                    loading.set(false);
                 } else {
-                    mainView.onError(new Throwable("Server error has occured"));
-                    loading.set(false);
+                    mainView.onError(new Throwable("Server error has occurred"));
                 }
+                loading.set(false);
             }
 
             @Override
-            public void onFailure(Call<GettyResponse> call, Throwable t) {
+            public void onError(@NonNull Throwable t) {
                 mainView.onError(t);
                 loading.set(false);
             }
-        });
-        this.query = query;
+
+            @Override
+            public void onComplete() {
+
+            }
+        };
     }
 
     @Override
@@ -89,6 +109,7 @@ public class MainPresenterImpl implements MainPresenter {
 
     @Override
     public void detachView() {
+        disposables.clear();
         mainView = null;
     }
 }

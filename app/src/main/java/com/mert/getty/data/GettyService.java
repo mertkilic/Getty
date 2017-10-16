@@ -2,7 +2,8 @@ package com.mert.getty.data;
 
 import com.mert.getty.data.model.GettyResponse;
 
-import retrofit2.Call;
+import io.reactivex.Observable;
+import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
@@ -12,5 +13,5 @@ import retrofit2.http.Query;
 
 public interface GettyService {
     @GET("search/images")
-    Call<GettyResponse> search(@Query("phrase") String keyword, @Query("page_size") int pageSize, @Query("page") int page);
+    Observable<Response<GettyResponse>> search(@Query("phrase") String keyword, @Query("page_size") int pageSize, @Query("page") int page);
 }

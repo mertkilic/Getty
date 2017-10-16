@@ -38,6 +38,7 @@ public class MainActivity extends DaggerAppCompatActivity implements MainView, T
     private ToastCaptionBinding toastBinding;
     private DataBindingComponent dataBindingComponent = new SearchDataBindingComponent();
     private SearchResultAdapter adapter;
+    private AlertDialog errorDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +102,11 @@ public class MainActivity extends DaggerAppCompatActivity implements MainView, T
             errorMessage = getString(R.string.no_internet);
         } else errorMessage = t.getMessage();
 
-        new AlertDialog.Builder(this)
+        if(errorDialog != null && errorDialog.isShowing()){
+            return;
+        }
+
+        errorDialog = new AlertDialog.Builder(this)
                 .setMessage(errorMessage)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
