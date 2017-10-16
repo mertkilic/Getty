@@ -18,7 +18,7 @@ public class GettyApiInterceptor implements Interceptor {
 
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {
-        Request.Builder builder = chain.request().newBuilder().addHeader("Api-Key", BuildConfig.GETTY_API_KEY);
+        Request.Builder builder = chain.request().newBuilder().addHeader("Api-Key", GettyClientConfig.getApiKey());
         return chain.proceed(builder.build());
     }
 }
