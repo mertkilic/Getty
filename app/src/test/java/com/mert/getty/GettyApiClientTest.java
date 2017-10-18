@@ -1,8 +1,6 @@
 package com.mert.getty;
 
 import com.mert.getty.data.GettyService;
-import com.mert.getty.data.api.GettyApiInterceptor;
-import com.mert.getty.data.api.GettyClientConfig;
 import com.mert.getty.data.model.GettyResponse;
 import com.mert.getty.data.model.Image;
 
@@ -16,7 +14,9 @@ import java.io.IOException;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -43,7 +43,15 @@ public class GettyApiClientTest extends MockWebServerTest {
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(endpoint)
-                .client(new OkHttpClient.Builder().addInterceptor(new GettyApiInterceptor()).build())
+                .client(new OkHttpClient.Builder().addInterceptor(new Interceptor() {
+                    @Override
+                    public okhttp3.Response intercept(Chain chain) throws IOException {
+                        Request request = chain.request()
+                                .newBuilder()
+                                .addHeader("Api-Key", "7yumftd9wdb6frx27fppwdy2").build();
+                        return chain.proceed(request);
+                    }
+                }).build())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
 
@@ -70,7 +78,7 @@ public class GettyApiClientTest extends MockWebServerTest {
 
                     }
                 });
-        assertRequestContainsHeader("Api-Key", GettyClientConfig.getApiKey());
+        assertRequestContainsHeader("Api-Key", "7yumftd9wdb6frx27fppwdy2");
     }
 
     @Test
