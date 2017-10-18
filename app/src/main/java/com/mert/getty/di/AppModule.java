@@ -4,17 +4,25 @@ import android.app.Application;
 import android.content.Context;
 
 import com.mert.getty.data.GettyService;
-import com.mert.getty.data.api.GettyApiInterceptor;
 import com.mert.getty.data.api.GettyClientConfig;
+import com.mert.getty.util.StateManager;
+import com.mert.getty.util.StateManagerImpl;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Cache;
+import okhttp3.CacheControl;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -26,6 +34,10 @@ import static com.mert.getty.data.api.GettyClientConfig.BASE_ENDPOINT;
  */
 @Module
 public class AppModule {
+
+    private static final String CACHE_CONTROL = "Cache-Control";
+    private static final String PRAGMA = "Pragma";
+    private static final String API_KEY = "Api-Key";
 
     @Provides
     @Singleton
@@ -56,16 +68,66 @@ public class AppModule {
 
     @Provides
     @Singleton
-    GettyApiInterceptor provideCacheInterceptor() {
-        return new GettyApiInterceptor();
+    @Named("offlineCacheInterceptor")
+    Interceptor provideOfflineCacheInterceptor(final StateManager stateManager) {
+        return new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request request = chain.request()
+                        .newBuilder()
+                        .addHeader(API_KEY, GettyClientConfig.getApiKey()).build();
+
+                if (!stateManager.isConnected()) {
+                    CacheControl cacheControl = new CacheControl.Builder()
+                            .maxStale(GettyClientConfig.CACHE_MAX_STALE, TimeUnit.DAYS)
+                            .build();
+
+                    request = request.newBuilder()
+                            .cacheControl(cacheControl)
+                            .build();
+                }
+                return chain.proceed(request);
+            }
+        };
+    }
+
+    @Singleton
+    @Provides
+    @Named("cacheInterceptor")
+    Interceptor provideCacheInterceptor() {
+        return new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Response response = chain.proceed(chain.request());
+
+                CacheControl cacheControl = new CacheControl.Builder()
+                        .maxAge(GettyClientConfig.CACHE_MAX_AGE, TimeUnit.MINUTES)
+                        .build();
+
+                return response.newBuilder()
+                        .removeHeader(PRAGMA)
+                        .removeHeader(CACHE_CONTROL)
+                        .header(CACHE_CONTROL, cacheControl.toString())
+                        .build();
+            }
+        };
     }
 
     @Provides
     @Singleton
-    OkHttpClient provideOkHttpClient(GettyApiInterceptor interceptor, Cache cache) {
+    OkHttpClient provideOkHttpClient(@Named("cacheInterceptor") Interceptor cacheInterceptor,
+                                     @Named("offlineCacheInterceptor") Interceptor offlineCacheInterceptor,
+                                     Cache cache) {
         return new OkHttpClient.Builder()
                 .cache(cache)
-                .addInterceptor(interceptor)
+                .addNetworkInterceptor(cacheInterceptor)
+                .addInterceptor(offlineCacheInterceptor)
                 .build();
+    }
+
+    @Provides
+    @Singleton
+    public StateManager provideStateManager(StateManagerImpl stateManager) {
+        return stateManager;
     }
 }

@@ -17,5 +17,8 @@ public class GettyClientConfig {
     public static final String CACHE_NAME = "http-cache";
 
     public static final int NETWORK_CONNECTION_TIMEOUT = 10; // 10 sec
+    public static final int CACHE_MAX_AGE = 2; // 2 min
     public static final long CACHE_SIZE = 5 * 1024 * 1024; // 5 MB
+    public static final int CACHE_MAX_STALE = 7; // 7 day
+
 }
